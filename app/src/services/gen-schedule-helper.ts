@@ -18,21 +18,14 @@ const DAYS: string[] = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 // Export if needed
 export { TIME_SLOTS, HOURS_FOR_HEADER, DAYS };
 
-export function timeToColspan(start: string, end: string): number {
-  const [startHour, startMinute] = start.split(":").map(Number);
-  const [endHour, endMinute] = end.split(":").map(Number);
+export function timeToColspan(start: string, duration: string): number {
+    // Calculates colspan for a class based on its duration, where each column represents a 30-minute slot.
+    const [hDur, mDur] = duration.split(":").map(Number);
+    const totalMinutes = hDur * 60 + mDur;
 
-  const startMinutes = startHour * 60 + startMinute;
-  const endMinutes = endHour * 60 + endMinute;
-
-  let totalMinutes = endMinutes - startMinutes;
-
-  if (totalMinutes < 0) {
-    throw new Error("End time must be after start time");
-  }
-
-  // Calculate colspan based on 30-minute intervals, rounding up
-  return Math.max(1, Math.ceil(totalMinutes / 30));
+    // Calculate colspan based on 30-minute intervals, rounding up
+    // e.g., 1 hour (60 min) -> 2 slots; 1 hour 30 min (90 min) -> 3 slots
+    return Math.max(1, Math.floor((totalMinutes + 29) / 30));
 }
 
 function parseTime(time: string): Date {
