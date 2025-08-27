@@ -1,5 +1,13 @@
 <template>
   <div>
-      <h1 class="text-6xl w-full text-center text-purple-400">Welcome to My App</h1>
+    <span>{{courses}}</span>
+    <ManualInput v-model="courses" />
   </div>
 </template>
+
+<script setup>
+import { ref } from 'vue';
+import ManualInput from '../components/ManualInput.vue';
+
+const courses = ref([]);
+</script>
