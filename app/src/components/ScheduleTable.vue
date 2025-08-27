@@ -28,8 +28,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
-import { timeToColspan, getStartSlotIndex, computeEnd, DAYS, TIME_SLOTS, HOURS_FOR_HEADER } from '../components/gen-schedule-helper.ts';
+import { defineComponent } from 'vue';
+import { timeToColspan, getStartSlotIndex, DAYS, TIME_SLOTS, HOURS_FOR_HEADER } from '../components/gen-schedule-helper.ts';
 
 export interface ClassEntry {
   day: string;
@@ -46,12 +46,12 @@ export default defineComponent({
   name: 'ScheduleTable',
   props: {
     modelValue: {
-      type: Array as PropType<ClassEntry[]>,
+      type: Array,
       required: true,
     },
   },
   emits: ['update:modelValue'],
-  setup(props, { emit }) {
+  setup(props) {
     const dayColors: Record<string, string> = {
       MON: 'bg-yellow-400',
       TUE: 'bg-pink-400',
