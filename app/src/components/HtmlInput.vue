@@ -15,7 +15,7 @@ const props = defineProps({
 const emits = defineEmits(['update:modelValue']);
 
 // Local state to manage the courses, initialized with the prop value
-const courses = ref([]);
+const courses = ref<any>([]);
 
 watch(() => props.modelValue, (newVal) => {
   courses.value = newVal;
