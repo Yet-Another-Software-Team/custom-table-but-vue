@@ -6,7 +6,6 @@ import HomeView from './pages/HomeView.vue'
 
 const routes = [
   { path: '/', name: 'home', component: HomeView },
-  { path: '/about', name: 'about' },
 ]
 
 const router = createRouter({
