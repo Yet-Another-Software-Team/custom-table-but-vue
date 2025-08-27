@@ -6,7 +6,6 @@ for (let h = 8; h <= 20; h++) {
     TIME_SLOTS.push(`${h.toString().padStart(2, "0")}:30`);
   }
 }
-
 // Example TIME_SLOTS: ['08:00', '08:30', '09:00', '09:30', ..., '20:00']
 
 // Full hours for header display
@@ -43,10 +42,10 @@ function parseTime(time: string): Date {
 }
 
 export function getStartSlotIndex(startTimeStr: string): number {
-    try {
+    if (TIME_SLOTS.includes(startTimeStr)) {
         return TIME_SLOTS.indexOf(startTimeStr);
     }
-    catch(ValueError) {
+    else {
         // If the time is not exactly on a 00 or 30 mark,
         // round down to the nearest 30-minute interval for placement.
         const startDT: Date = parseTime(startTimeStr);
@@ -58,10 +57,10 @@ export function getStartSlotIndex(startTimeStr: string): number {
         } else {
             alignedTimeStr = `${hour.toString().padStart(2, "0")}:30`;
         }
-    try {
+    if (TIME_SLOTS.includes(alignedTimeStr)){
         return TIME_SLOTS.indexOf(alignedTimeStr);
     }
-    catch(ValueError) {
+    else {
         // Fallback if somehow still not found (shouldn't happen with proper TIME_SLOTS)
         return 0; // Default to the very beginning if something goes wrong
         }
