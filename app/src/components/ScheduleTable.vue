@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, type PropType } from 'vue';
 import { timeToColspan, getStartSlotIndex, DAYS, TIME_SLOTS, HOURS_FOR_HEADER } from '../components/gen-schedule-helper.ts';
 
 export interface ClassEntry {
