@@ -16,6 +16,7 @@
           <td :class="['w-48 sticky left-0 z-20 px-4 py-3 font-bold text-center text-neutral-900 border-r border-gray-800 whitespace-nowrap', dayColors[day] || 'bg-gray-800 text-neutral-900', i !== DAYS.length - 1 ? 'border-b border-gray-800' : '']">
             {{ day }}
           </td>
+          <!-- The 'cell' variable is correctly typed now. -->
           <template v-for="cell in getRowCells(day, i === DAYS.length - 1)">
             <td v-if="cell.type === 'empty'" :colspan="cell.colspan" :class="['w-12', !cell.isLastRow ? 'border-b border-gray-800' : '']"></td>
             <td v-else v-html="cell.html" :colspan="cell.colspan"></td>
@@ -28,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import { timeToColspan, getStartSlotIndex, DAYS, TIME_SLOTS, HOURS_FOR_HEADER } from '../components/gen-schedule-helper.ts';
 
 export interface ClassEntry {
@@ -46,7 +47,7 @@ export default defineComponent({
   name: 'ScheduleTable',
   props: {
     modelValue: {
-      type: Array,
+      type: Array as PropType<ClassEntry[]>,
       required: true,
     },
   },
@@ -79,7 +80,6 @@ export default defineComponent({
 
     function getRowCells(day: string, isLastRow: boolean) {
       let slotPtr = 0;
-      // Always use the latest modelValue for reactivity
       const sortedClasses = (props.modelValue ?? [])
         .filter(cls => cls.day === day)
         .sort((a, b) => Date.parse(`1970-01-01T${a.start}:00`) - Date.parse(`1970-01-01T${b.start}:00`));
@@ -110,7 +110,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-/* Add any additional styling if needed */
-</style>
