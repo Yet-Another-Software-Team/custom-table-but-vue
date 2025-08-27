@@ -67,3 +67,15 @@ export function getStartSlotIndex(startTimeStr: string): number {
         }
     }
 }
+
+export function computeEnd(start: string, duration: string): string {
+    const [startHour, startMinute] = start.split(":").map(Number);
+    const [durationHour, durationMinute] = duration.split(":").map(Number);
+    const startDT = new Date();
+    startDT.setHours(startHour, startMinute, 0, 0);
+    startDT.setHours(startDT.getHours() + durationHour);
+    startDT.setMinutes(startDT.getMinutes() + durationMinute);
+    const endHour = startDT.getHours().toString().padStart(2, "0");
+    const endMinute = startDT.getMinutes().toString().padStart(2, "0");
+    return `${endHour}:${endMinute}`;
+}
