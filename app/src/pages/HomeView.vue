@@ -1,6 +1,5 @@
 <template>
   <div>
-    <span>{{courses}}</span>
     <ScheduleTable :modelValue="courses" />
     <ManualInput v-model="courses" />
     <HtmlInput v-model="courses"/>
