@@ -23,7 +23,7 @@
         </tr>
       </tbody>
     </table>
-    <div class="text-right text-xs text-gray-400 p-4 mt-4 select-none">created by Sirapob P.</div>
+    <div class="text-right text-xs text-gray-400 p-4 mt-4 select-none">created by YAST</div>
   </div>
 </template>
 
