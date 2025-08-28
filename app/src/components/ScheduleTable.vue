@@ -1,30 +1,33 @@
 <template>
-  <div class="overflow-w-auto w-[95vw] h-[80vh] rounded-xl shadow-2xl bg-[#111622] border border-gray-800">
-    <table class="border-separate border-spacing-0 size-full text-sm">
-      <thead>
-        <tr class="bg-[#111622] sticky top-0 z-20 border-b border-gray-800">
-          <th class="w-48 sticky left-0 z-[100] bg-[#111622] px-4 py-3 text-left font-semibold text-white rounded-tl-lg border-r border-gray-800">
-            Day/Time
-          </th>
-          <th v-for="h in HOURS_FOR_HEADER" :key="h" colspan="2" class="px-4 py-3 w-24 text-center text-gray-300 font-medium whitespace-nowrap border-r border-b border-gray-800">
-            {{ h }}:00
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(day, i) in DAYS" :key="day" class="h-25">
-          <td :class="['w-48 sticky left-0 z-20 px-4 py-3 font-bold text-center text-neutral-900 border-r border-gray-800 whitespace-nowrap', dayColors[day] || 'bg-gray-800 text-neutral-900', i !== DAYS.length - 1 ? 'border-b border-gray-800' : '']">
-            {{ day }}
-          </td>
-          <!-- The 'cell' variable is correctly typed now. -->
-          <template v-for="cell in getRowCells(day, i === DAYS.length - 1)">
-            <td v-if="cell.type === 'empty'" :colspan="cell.colspan" :class="['w-12', !cell.isLastRow ? 'border-b border-gray-800' : '']"></td>
-            <td v-else v-html="cell.html" :colspan="cell.colspan"></td>
-          </template>
-        </tr>
-      </tbody>
-    </table>
-    <div class="text-right text-xs text-gray-400 p-4 mt-4 select-none">created by YAST</div>
+  <div class="container mx-auto rounded-xl shadow-2xl bg-[#111622] border border-gray-800">
+    <div class="relative">
+      <table class="border-separate border-spacing-0 size-full text-sm">
+        <thead>
+          <tr class="bg-[#111622] sticky top-0 z-20 border-b border-gray-800">
+            <th class="w-48 sticky left-0 z-[100] bg-[#111622] px-4 py-3 text-left font-semibold text-white rounded-tl-lg border-r border-gray-800">
+              Day/Time
+            </th>
+            <th v-for="(h, index) in HOURS_FOR_HEADER" :key="h" colspan="2" :class="['px-4 py-3 w-24 text-center text-gray-300 font-medium whitespace-nowrap border-r border-b border-gray-800', {'rounded-tr-lg': index === HOURS_FOR_HEADER.length - 1}]">
+              {{ h }}:00
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(day, i) in DAYS" :key="day" class="h-25">
+            <td :class="['w-48 sticky left-0 z-20 px-4 py-3 font-bold text-center text-neutral-900 border-r border-gray-800 whitespace-nowrap', dayColors[day] || 'bg-gray-800 text-neutral-900', i !== DAYS.length - 1 ? 'border-b border-gray-800' : 'rounded-bl-lg']">
+              {{ day }}
+            </td>
+            <!-- The 'cell' variable is correctly typed now. -->
+            <template v-for="cell in getRowCells(day, i === DAYS.length - 1)">
+              <td v-if="cell.type === 'empty'" :colspan="cell.colspan" :class="['w-12', !cell.isLastRow ? 'border-b border-gray-800' : '']"></td>
+              <td v-else v-html="cell.html" :colspan="cell.colspan"></td>
+            </template>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="absolute text-right text-xs text-gray-400 right-2 bottom-2 select-none">created by YAST</div>
+    </div>
   </div>
 </template>
 

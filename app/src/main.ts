@@ -13,6 +13,8 @@ const router = createRouter({
   routes,
 })
 
+document.title = 'Week Wizard';
+
 const app = createApp(App)
 app.use(router)
 app.mount('#app')
