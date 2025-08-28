@@ -1,5 +1,5 @@
 <template>
-  <div class="overflow-w-auto w-[95vw] h-[80vh] rounded-xl shadow-2xl bg-[#111622] border border-gray-800">
+  <div class="container mx-auto rounded-xl shadow-2xl bg-[#111622] border border-gray-800">
     <table class="border-separate border-spacing-0 size-full text-sm">
       <thead>
         <tr class="bg-[#111622] sticky top-0 z-20 border-b border-gray-800">
