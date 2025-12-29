@@ -9,7 +9,7 @@
                 <colgroup>
                     <col style="width: 1.5em" />
                     <col
-                        v-for="(slot, index) in TIME_SLOTS"
+                        v-for="(_, index) in TIME_SLOTS"
                         :key="'col-' + index"
                         style="width: 1.5em"
                     />
