@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { parseHtmlToJson } from "../functions/parser";
+import KuHtmlGuide from "./KuHtmlGuide.vue";
 
 // Props: courses via v-model and modal visibility
 const props = defineProps<{
@@ -94,35 +95,9 @@ function closeModal() {
                     </button>
                 </div>
 
-                <!-- Body -->
                 <div class="p-4 space-y-3">
-                    <div
-                        v-if="showInfo"
-                        class="text-slate-200 bg-slate-800/60 border border-slate-600 rounded-lg px-3 py-3 text-sm"
-                    >
-                        <div class="font-semibold mb-1">
-                            How to get KU table HTML
-                        </div>
-                        <ol class="list-decimal list-inside space-y-1">
-                            <li>Open your KU timetable page in the browser.</li>
-                            <li>
-                                Right-click on the timetable and choose “View
-                                Page Source” or use Developer Tools (F12).
-                            </li>
-                            <li>
-                                Copy the HTML for the table element that
-                                contains your schedule.
-                            </li>
-                            <li>
-                                Paste that HTML into the textarea below, then
-                                click “Import table data from HTML”.
-                            </li>
-                        </ol>
-                        <div class="mt-2 opacity-80">
-                            Tip: Ensure the table includes day, time, code,
-                            title, room, type, and section data.
-                        </div>
-                    </div>
+                    <KuHtmlGuide v-if="showInfo" />
+
                     <textarea
                         v-model="message"
                         rows="10"
