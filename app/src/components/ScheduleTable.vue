@@ -125,7 +125,7 @@ import {
     DAYS,
     TIME_SLOTS,
     HOURS_FOR_HEADER,
-} from "../components/gen-schedule-helper.ts";
+} from "../functions/gen-schedule-helper.ts";
 
 export interface ClassEntry {
     day: string;
