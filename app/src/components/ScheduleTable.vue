@@ -102,6 +102,7 @@
                 <a
                     href="https://github.com/Yet-Another-Software-Team"
                     target="_blank"
+                    rel="noopener noreferrer"
                     class="hover:cursor-pointer hover:text-blue-500"
                     >YAST</a
                 >
