@@ -226,33 +226,24 @@ function closeModal() {
                         {{ errorText }}
                     </div>
 
-                    <div
-                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3"
-                    >
+                    <div class="flex flex-wrap flex-1 gap-3 w-full justify-end">
                         <button
                             @click="importJson"
-                            class="w-full bg-emerald-500 text-white font-bold rounded-xl px-6 py-3 shadow-lg hover:bg-emerald-600 transition-colors duration-200"
+                            class="w-fit bg-emerald-500 text-white font-bold rounded-xl px-6 py-3 shadow-lg hover:bg-emerald-600 transition-colors duration-200"
                         >
                             Import JSON
                         </button>
 
                         <button
-                            @click="exportJson"
-                            class="w-full bg-cyan-500 text-white font-bold rounded-xl px-6 py-3 shadow-lg hover:bg-cyan-600 transition-colors duration-200"
-                        >
-                            Export from Courses
-                        </button>
-
-                        <button
                             @click="copyToClipboard"
-                            class="w-full bg-indigo-500 text-white font-bold rounded-xl px-6 py-3 shadow-lg hover:bg-indigo-600 transition-colors duration-200"
+                            class="w-fit bg-indigo-500 text-white font-bold rounded-xl px-6 py-3 shadow-lg hover:bg-indigo-600 transition-colors duration-200"
                         >
                             Copy JSON
                         </button>
 
                         <button
                             @click="downloadJson"
-                            class="w-full bg-fuchsia-500 text-white font-bold rounded-xl px-6 py-3 shadow-lg hover:bg-fuchsia-600 transition-colors duration-200"
+                            class="w-fit bg-fuchsia-500 text-white font-bold rounded-xl px-6 py-3 shadow-lg hover:bg-fuchsia-600 transition-colors duration-200"
                         >
                             Download JSON
                         </button>

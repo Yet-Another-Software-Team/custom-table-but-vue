@@ -279,7 +279,7 @@ const editingIndex = ref(-1);
 watch(
     () => props.modelValue,
     (newVal) => {
-        courses.value = newVal;
+        courses.value = Array.isArray(newVal) ? [...newVal] : [];
     },
     { immediate: true },
 );
@@ -304,7 +304,7 @@ const addCourse = () => {
     const { day, start, end, code, title, room, type, section } =
         newCourse.value;
     if (day && start && end && code && title && room && type && section) {
-        courses.value.push({ ...newCourse.value });
+        courses.value = [...courses.value, { ...newCourse.value }];
         newCourse.value = {
             day: "",
             start: "",
@@ -330,8 +330,10 @@ const updateCourse = () => {
     const { day, start, end, code, title, room, type, section } =
         newCourse.value;
     if (day && start && end && code && title && room && type && section) {
-        // Update the course in the local array, triggering the watch to emit
-        courses.value[editingIndex.value] = { ...newCourse.value };
+        // Create a new array instance with the updated item to ensure change detection
+        const updated = [...courses.value];
+        updated[editingIndex.value] = { ...newCourse.value };
+        courses.value = updated;
         cancelEdit();
     } else {
         alert("Please fill out all the fields before updating a course.");
@@ -354,6 +356,6 @@ const cancelEdit = () => {
 
 // Function to remove a course from the courses array by its index
 const removeCourse = (index) => {
-    courses.value.splice(index, 1);
+    courses.value = courses.value.filter((_, i) => i !== index);
 };
 </script>
