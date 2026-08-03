@@ -1,361 +1,319 @@
 <template>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Added Course List Block -->
-        <div class="bg-slate-700 rounded-xl p-4 shadow-lg">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-bold text-slate-300">Added Courses</h2>
+  <div class="bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-800 p-6 shadow-2xl space-y-6 text-slate-100">
+    <!-- Top Action & Tools Bar -->
+    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800/80 pb-5">
+      <!-- Left: Header & Quick Stats -->
+      <div class="space-y-1">
+        <h2 class="text-xl font-bold bg-gradient-to-r from-sky-400 to-indigo-400 bg-clip-text text-transparent flex items-center gap-2">
+          <Icon icon="ic:baseline-dashboard" class="w-5 h-5 text-cyan-400 inline" />
+          <span>Course Manager</span>
+        </h2>
+        <p class="text-xs text-slate-400">
+          Manage your schedule visually. Click any cell on the grid or add courses below!
+        </p>
+      </div>
 
-                <div class="flex items-center gap-2">
-                    <button
-                        @click="emits('open-json-modal')"
-                        class="text-xs bg-cyan-500 text-white font-semibold rounded-md px-3 py-1 shadow hover:bg-cyan-600 transition-colors"
-                        title="Import/Export JSON"
-                    >
-                        JSON
-                    </button>
+      <!-- Right: Action Buttons with Iconify Icons -->
+      <div class="flex flex-wrap items-center gap-2.5">
+        <!-- Toggle Sunday Button -->
+        <button
+          @click="toggleSunday"
+          :class="[
+            'flex items-center gap-1.5 px-3.5 py-2 rounded-xl border text-xs font-semibold transition-all',
+            includeSunday
+              ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 shadow-sm'
+              : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200'
+          ]"
+          title="Toggle Sunday column visibility"
+        >
+          <Icon icon="ic:baseline-today" class="w-4 h-4" />
+          <span>{{ includeSunday ? 'Sunday Enabled' : 'Hide Sunday' }}</span>
+        </button>
 
-                    <button
-                        @click="emits('open-html-modal')"
-                        class="text-xs bg-emerald-500 text-white font-semibold rounded-md px-3 py-1 shadow hover:bg-emerald-600 transition-colors"
-                        title="Import from KU HTML"
-                    >
-                        KU HTML
-                    </button>
-                </div>
-            </div>
+        <button
+          @click="openAddModal"
+          class="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold rounded-xl text-xs shadow-lg transition-all transform hover:-translate-y-0.5"
+        >
+          <Icon icon="ic:baseline-add-circle" class="w-4 h-4" />
+          <span>Add Course</span>
+        </button>
 
-            <div
-                v-if="courses.length === 0"
-                class="text-slate-400 text-center py-8"
-            >
-                No courses added yet.
-            </div>
-            <div v-else class="space-y-2">
-                <div
-                    v-for="(course, index) in courses"
-                    :key="index"
-                    class="flex items-center justify-between bg-slate-600 rounded-lg p-3 text-sm transition-transform transform hover:scale-[1.02] hover:bg-slate-500"
-                >
-                    <span class="font-medium text-slate-100">
-                        <span class="font-bold">{{ course.day }}</span
-                        >: {{ course.title }} ({{ course.code }})
-                    </span>
-                    <div class="flex items-center space-x-2">
-                        <button
-                            @click="editCourse(index)"
-                            class="text-yellow-400 hover:text-yellow-500 focus:outline-none"
-                            title="Edit Course"
-                        >
-                            <Icon icon="ic:baseline-edit" />
-                        </button>
-                        <button
-                            @click="removeCourse(index)"
-                            class="text-red-400 hover:text-red-500 focus:outline-none"
-                            title="Remove Course"
-                        >
-                            <Icon icon="ic:baseline-delete" />
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <button
+          @click="emits('open-html-modal')"
+          class="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-semibold transition-all"
+          title="Import schedule from KU HTML"
+        >
+          <Icon icon="ic:baseline-code" class="w-4 h-4" />
+          <span>KU HTML Import</span>
+        </button>
 
-        <!-- Course Creation and Edit Form -->
-        <div class="bg-slate-700 rounded-xl p-4 shadow-lg md:col-span-2">
-            <h2 class="text-xl font-bold text-slate-300 mb-4">
-                {{ editingIndex === -1 ? "Add New Course" : "Edit Course" }}
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex flex-col">
-                    <label
-                        for="day"
-                        class="text-sm font-medium text-slate-300 mb-1"
-                        >Day</label
-                    >
-                    <select
-                        id="day"
-                        v-model="newCourse.day"
-                        class="w-full bg-slate-600 text-slate-100 border-2 border-slate-500 rounded-xl px-4 py-2 focus:outline-none focus:border-cyan-500 transition-colors"
-                    >
-                        <option value="" disabled>Select Day</option>
-                        <option v-for="day in days" :key="day" :value="day">
-                            {{ day }}
-                        </option>
-                    </select>
-                </div>
+        <button
+          @click="emits('open-json-modal')"
+          class="flex items-center gap-1.5 px-3.5 py-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 rounded-xl text-xs font-semibold transition-all"
+          title="Import or Export JSON data"
+        >
+          <Icon icon="ic:baseline-save" class="w-4 h-4" />
+          <span>JSON I/O</span>
+        </button>
 
-                <div></div>
-
-                <div class="flex flex-col">
-                    <label
-                        for="start"
-                        class="text-sm font-medium text-slate-300 mb-1"
-                        >Start Time</label
-                    >
-                    <select
-                        id="start"
-                        v-model="newCourse.start"
-                        class="w-full bg-slate-600 text-slate-100 border-2 border-slate-500 rounded-xl px-4 py-2 focus:outline-none focus:border-cyan-500 transition-colors"
-                    >
-                        <option value="" disabled>Select Start Time</option>
-                        <option
-                            v-for="time in startTimes"
-                            :key="time"
-                            :value="time"
-                        >
-                            {{ time }}
-                        </option>
-                    </select>
-                </div>
-
-                <div class="flex flex-col">
-                    <label
-                        for="end"
-                        class="text-sm font-medium text-slate-300 mb-1"
-                        >End Time</label
-                    >
-                    <select
-                        id="end"
-                        v-model="newCourse.end"
-                        class="w-full bg-slate-600 text-slate-100 border-2 border-slate-500 rounded-xl px-4 py-2 focus:outline-none focus:border-cyan-500 transition-colors"
-                    >
-                        <option value="" disabled>Select End Time</option>
-                        <option
-                            v-for="time in filteredEndTimes"
-                            :key="time"
-                            :value="time"
-                        >
-                            {{ time }}
-                        </option>
-                    </select>
-                </div>
-                <div class="flex flex-col">
-                    <label
-                        for="code"
-                        class="text-sm font-medium text-slate-300 mb-1"
-                        >Course Code</label
-                    >
-                    <input
-                        id="code"
-                        v-model="newCourse.code"
-                        type="text"
-                        placeholder="e.g., 01219366-65"
-                        class="w-full bg-slate-600 text-slate-100 placeholder-slate-400 border-2 border-slate-500 rounded-xl px-4 py-2 focus:outline-none focus:border-cyan-500 transition-colors"
-                    />
-                </div>
-                <div></div>
-
-                <div class="flex flex-col md:col-span-2">
-                    <label
-                        for="title"
-                        class="text-sm font-medium text-slate-300 mb-1"
-                        >Course Title</label
-                    >
-                    <input
-                        id="title"
-                        v-model="newCourse.title"
-                        type="text"
-                        placeholder="e.g., Knowledge Engineering"
-                        class="w-full bg-slate-600 text-slate-100 placeholder-slate-400 border-2 border-slate-500 rounded-xl px-4 py-2 focus:outline-none focus:border-cyan-500 transition-colors"
-                    />
-                </div>
-                <div class="flex flex-col">
-                    <label
-                        for="room"
-                        class="text-sm font-medium text-slate-300 mb-1"
-                        >Room</label
-                    >
-                    <input
-                        id="room"
-                        v-model="newCourse.room"
-                        type="text"
-                        placeholder="e.g., E11-S603"
-                        class="w-full bg-slate-600 text-slate-100 placeholder-slate-400 border-2 border-slate-500 rounded-xl px-4 py-2 focus:outline-none focus:border-cyan-500 transition-colors"
-                    />
-                </div>
-                <div class="flex flex-col">
-                    <label
-                        for="type"
-                        class="text-sm font-medium text-slate-300 mb-1"
-                        >Type</label
-                    >
-                    <select
-                        id="type"
-                        v-model="newCourse.type"
-                        class="w-full bg-slate-600 text-slate-100 border-2 border-slate-500 rounded-xl px-4 py-2 focus:outline-none focus:border-cyan-500 transition-colors"
-                    >
-                        <option value="" disabled>Select Type</option>
-                        <option v-for="type in types" :key="type" :value="type">
-                            {{ type }}
-                        </option>
-                    </select>
-                </div>
-                <div class="flex flex-col">
-                    <label
-                        for="section"
-                        class="text-sm font-medium text-slate-300 mb-1"
-                        >Section</label
-                    >
-                    <input
-                        id="section"
-                        v-model="newCourse.section"
-                        type="text"
-                        placeholder="e.g., 450"
-                        class="w-full bg-slate-600 text-slate-100 placeholder-slate-400 border-2 border-slate-500 rounded-xl px-4 py-2 focus:outline-none focus:border-cyan-500 transition-colors"
-                    />
-                </div>
-            </div>
-            <button
-                @click="editingIndex === -1 ? addCourse() : updateCourse()"
-                class="w-full bg-cyan-500 text-white font-bold rounded-xl px-6 py-3 shadow-lg hover:bg-cyan-600 transition-colors duration-200 mt-4"
-            >
-                {{ editingIndex === -1 ? "Add Course" : "Update Course" }}
-            </button>
-            <button
-                v-if="editingIndex !== -1"
-                @click="cancelEdit()"
-                class="w-full bg-slate-600 text-slate-200 font-bold rounded-xl px-6 py-3 shadow-lg hover:bg-slate-500 transition-colors duration-200 mt-2"
-            >
-                Cancel Edit
-            </button>
-        </div>
+        <button
+          v-if="courses.length > 0"
+          @click="confirmClearAll"
+          class="flex items-center gap-1.5 px-3.5 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-xl text-xs font-semibold transition-all"
+          title="Clear all courses"
+        >
+          <Icon icon="ic:baseline-delete-forever" class="w-4 h-4" />
+          <span>Clear All</span>
+        </button>
+      </div>
     </div>
+
+    <!-- Quick Stats Cards with Icons -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-slate-800/50 border border-slate-700/60 rounded-xl p-3.5 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
+          <Icon icon="ic:baseline-book" class="w-5 h-5" />
+        </div>
+        <div>
+          <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Total Courses</div>
+          <div class="text-xl font-extrabold text-slate-100">{{ courses.length }}</div>
+        </div>
+      </div>
+
+      <div class="bg-slate-800/50 border border-slate-700/60 rounded-xl p-3.5 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+          <Icon icon="ic:baseline-school" class="w-5 h-5" />
+        </div>
+        <div>
+          <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Total Credits</div>
+          <div class="text-xl font-extrabold text-slate-100">{{ totalCredits }} cr</div>
+        </div>
+      </div>
+
+      <div class="bg-slate-800/50 border border-slate-700/60 rounded-xl p-3.5 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+          <Icon icon="ic:baseline-access-time" class="w-5 h-5" />
+        </div>
+        <div>
+          <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Weekly Hours</div>
+          <div class="text-xl font-extrabold text-slate-100">{{ totalWeeklyHours }} hrs</div>
+        </div>
+      </div>
+
+      <div class="bg-slate-800/50 border border-slate-700/60 rounded-xl p-3.5 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+          <Icon icon="ic:baseline-warning" class="w-5 h-5" />
+        </div>
+        <div>
+          <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Conflicts</div>
+          <div :class="['text-xl font-extrabold', conflictCount > 0 ? 'text-rose-400' : 'text-slate-100']">
+            {{ conflictCount }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Courses Cards List -->
+    <div class="bg-slate-800/40 border border-slate-700/50 rounded-xl p-5 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+          <Icon icon="ic:baseline-list-alt" class="w-4 h-4 text-cyan-400" />
+          <span>Active Course List</span>
+          <span class="text-xs px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 font-mono">
+            {{ courses.length }}
+          </span>
+        </h3>
+        <span class="text-xs text-slate-400">Click any course on grid or list to edit</span>
+      </div>
+
+      <div v-if="courses.length === 0" class="py-12 text-center text-slate-500 space-y-2">
+        <Icon icon="ic:baseline-event-busy" class="w-10 h-10 mx-auto text-slate-600" />
+        <div class="text-sm font-medium">No courses in schedule yet</div>
+        <div class="text-xs text-slate-400">
+          Click any slot on the grid or import HTML/JSON to get started!
+        </div>
+      </div>
+
+      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 max-h-[360px] overflow-y-auto pr-1 custom-scrollbar">
+        <div
+          v-for="(course, index) in courses"
+          :key="course.id || index"
+          class="p-3.5 rounded-xl border border-slate-700/80 bg-slate-800 hover:bg-slate-700/70 transition-all flex items-center justify-between group shadow-sm"
+        >
+          <div class="flex items-center gap-3 overflow-hidden">
+            <div
+              :class="[
+                'w-2 h-10 rounded-full flex-shrink-0',
+                getDayColorBadge(course.day)
+              ]"
+            ></div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-xs text-cyan-400 font-mono">{{ course.day }}</span>
+                <span class="text-[11px] text-slate-400 font-mono">
+                  {{ course.start }}-{{ course.end }}
+                </span>
+                <span class="text-[10px] px-1.5 py-0.2 rounded bg-slate-700 font-mono text-slate-300">
+                  {{ course.credits || 3 }}cr
+                </span>
+              </div>
+              <div class="text-xs font-bold text-slate-100 truncate mt-0.5">
+                {{ course.title || course.code }}
+              </div>
+              <div class="text-[10px] text-slate-400 truncate mt-0.5 flex items-center gap-1">
+                <span>{{ course.code }}</span>
+                <span>•</span>
+                <span class="flex items-center gap-0.5">
+                  <Icon icon="ic:baseline-location-on" class="w-3 h-3" />
+                  {{ course.room || 'TBA' }}
+                </span>
+                <span>(Sec {{ course.section }})</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+            <button
+              @click="duplicateCourse(course)"
+              class="text-slate-400 hover:text-cyan-400 p-1.5 rounded-lg hover:bg-slate-700 transition-colors"
+              title="Duplicate Course"
+            >
+              <Icon icon="ic:baseline-content-copy" class="w-4 h-4" />
+            </button>
+            <button
+              @click="removeCourse(index)"
+              class="text-slate-400 hover:text-rose-400 p-1.5 rounded-lg hover:bg-slate-700 transition-colors"
+              title="Delete course"
+            >
+              <Icon icon="ic:baseline-delete" class="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
-<script setup>
-import { ref, computed, defineProps, defineEmits, watch } from "vue";
+<script setup lang="ts">
+import { computed } from "vue";
 import { Icon } from "@iconify/vue";
+import {
+  DAY_COLORS,
+  timeToMinutes,
+  generateCourseId,
+  type CourseEntry,
+} from "../functions/gen-schedule-helper";
 
-// Pre-defined options for dropdowns
-const days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
-const types = ["Lecture", "Laboratory", "Seminar"];
-
-const generateTimeOptions = (startHour, endHour) => {
-    const times = [];
-    for (let h = startHour; h <= endHour; h++) {
-        for (let m = 0; m < 60; m += 30) {
-            if (h === endHour && m > 0) continue;
-            const hour = h.toString().padStart(2, "0");
-            const minute = m.toString().padStart(2, "0");
-            times.push(`${hour}:${minute}`);
-        }
-    }
-    return times;
-};
-
-const startTimes = generateTimeOptions(8, 20);
-
-// Use defineProps to receive the 'modelValue' prop from the parent
-const props = defineProps({
-    modelValue: {
-        type: Array,
-        default: () => [],
-    },
-});
-
-// Use defineEmits to declare the 'update:modelValue' event
-
-const emits = defineEmits([
-    "update:modelValue",
-    "open-json-modal",
-    "open-html-modal",
-]);
-
-// Local state to manage the courses, initialized with the prop value
-const courses = ref([]);
-const newCourse = ref({
-    day: "",
-    start: "",
-    end: "",
-    code: "",
-    title: "",
-    room: "",
-    type: "",
-    section: "",
-});
-const copySuccess = ref(false);
-const editingIndex = ref(-1);
-
-watch(
-    () => props.modelValue,
-    (newVal) => {
-        courses.value = Array.isArray(newVal) ? [...newVal] : [];
-    },
-    { immediate: true },
+const props = withDefaults(
+  defineProps<{
+    modelValue: CourseEntry[];
+    includeSunday?: boolean;
+  }>(),
+  {
+    includeSunday: false,
+  }
 );
 
-watch(
-    courses,
-    (newVal) => {
-        emits("update:modelValue", newVal);
-    },
-    { deep: true },
-);
+const emits = defineEmits<{
+  (e: "update:modelValue", courses: CourseEntry[]): void;
+  (e: "update:includeSunday", value: boolean): void;
+  (e: "open-json-modal"): void;
+  (e: "open-html-modal"): void;
+}>();
 
-const filteredEndTimes = computed(() => {
-    const startIndex = startTimes.indexOf(newCourse.value.start);
-    if (startIndex === -1) {
-        return [];
-    }
-    return startTimes.slice(startIndex + 1);
+// Writable computed to prevent infinite reactivity watcher loop
+const courses = computed<CourseEntry[]>({
+  get: () => props.modelValue || [],
+  set: (val) => emits("update:modelValue", val),
 });
 
-const addCourse = () => {
-    const { day, start, end, code, title, room, type, section } =
-        newCourse.value;
-    if (day && start && end && code && title && room && type && section) {
-        courses.value = [...courses.value, { ...newCourse.value }];
-        newCourse.value = {
-            day: "",
-            start: "",
-            end: "",
-            code: "",
-            title: "",
-            room: "",
-            type: "",
-            section: "",
-        };
-    } else {
-        alert("Please fill out all the fields before adding a course.");
+function toggleSunday() {
+  emits("update:includeSunday", !props.includeSunday);
+}
+
+// Stats Computations
+const totalCredits = computed(() => {
+  return courses.value.reduce((acc, c) => acc + (c.credits || 3), 0);
+});
+
+const totalWeeklyHours = computed(() => {
+  let totalMins = 0;
+  for (const c of courses.value) {
+    const startMins = timeToMinutes(c.start);
+    const endMins = timeToMinutes(c.end);
+    if (endMins > startMins) totalMins += endMins - startMins;
+  }
+  return (totalMins / 60).toFixed(1);
+});
+
+const conflictCount = computed(() => {
+  let conflicts = 0;
+  for (let i = 0; i < courses.value.length; i++) {
+    for (let j = i + 1; j < courses.value.length; j++) {
+      const c1 = courses.value[i];
+      const c2 = courses.value[j];
+      if (c1.day === c2.day) {
+        const s1 = timeToMinutes(c1.start);
+        const e1 = timeToMinutes(c1.end);
+        const s2 = timeToMinutes(c2.start);
+        const e2 = timeToMinutes(c2.end);
+        if (Math.max(s1, s2) < Math.min(e1, e2)) conflicts++;
+      }
     }
-};
+  }
+  return conflicts;
+});
 
-const editCourse = (index) => {
-    editingIndex.value = index;
-    const courseToEdit = courses.value[index];
-    newCourse.value = { ...courseToEdit };
-};
+function getDayColorBadge(day: string): string {
+  const dayColor = DAY_COLORS[day];
+  return dayColor ? dayColor.bg : "bg-slate-500";
+}
 
-const updateCourse = () => {
-    const { day, start, end, code, title, room, type, section } =
-        newCourse.value;
-    if (day && start && end && code && title && room && type && section) {
-        // Create a new array instance with the updated item to ensure change detection
-        const updated = [...courses.value];
-        updated[editingIndex.value] = { ...newCourse.value };
-        courses.value = updated;
-        cancelEdit();
-    } else {
-        alert("Please fill out all the fields before updating a course.");
-    }
-};
+function openAddModal() {
+  const defaultNew: CourseEntry = {
+    id: generateCourseId(),
+    day: "MON",
+    start: "09:00",
+    end: "10:30",
+    code: "NEW101",
+    title: "New Course Title",
+    room: "E11-603",
+    type: "Lecture",
+    section: "1",
+    credits: 3,
+    color: "Default (Day Based)",
+  };
+  courses.value = [...courses.value, defaultNew];
+}
 
-const cancelEdit = () => {
-    editingIndex.value = -1;
-    newCourse.value = {
-        day: "",
-        start: "",
-        end: "",
-        code: "",
-        title: "",
-        room: "",
-        type: "",
-        section: "",
-    };
-};
+function duplicateCourse(course: CourseEntry) {
+  const copy: CourseEntry = {
+    ...course,
+    id: generateCourseId(),
+  };
+  courses.value = [...courses.value, copy];
+}
 
-// Function to remove a course from the courses array by its index
-const removeCourse = (index) => {
-    courses.value = courses.value.filter((_, i) => i !== index);
-};
+function removeCourse(index: number) {
+  courses.value = courses.value.filter((_, i) => i !== index);
+}
+
+function confirmClearAll() {
+  if (confirm("Are you sure you want to clear all courses from the schedule?")) {
+    courses.value = [];
+  }
+}
 </script>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 3px;
+}
+</style>
