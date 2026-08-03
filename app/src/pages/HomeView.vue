@@ -7,17 +7,9 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 relative z-10">
       <!-- Header / Hero Section -->
       <header class="text-center space-y-3 pt-4">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/90 border border-slate-800 text-xs font-semibold text-cyan-400 shadow-inner">
-          <Icon icon="ic:baseline-auto-awesome" class="w-3.5 h-3.5 animate-pulse" />
-          <span>Next-Gen Schedule Builder</span>
-        </div>
         <h1 class="text-5xl sm:text-6xl font-black tracking-tight bg-gradient-to-r from-sky-300 via-cyan-200 to-indigo-400 bg-clip-text text-transparent drop-shadow-sm">
           Week Wizard
         </h1>
-        <p class="text-slate-400 max-w-2xl mx-auto text-sm sm:text-base font-normal leading-relaxed">
-          Craft, edit, and visualize your weekly timetable with drag & drop controls, 
-          KU HTML import, and conflict detection.
-        </p>
       </header>
 
       <!-- Main Schedule Grid Section -->
@@ -58,7 +50,6 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { Icon } from "@iconify/vue";
 import ScheduleTable from "../components/ScheduleTable.vue";
 import ManualInput from "../components/ManualInput.vue";
 import HtmlInput from "../components/HtmlInput.vue";
