@@ -175,8 +175,13 @@
                         Same
                       </span>
 
-                      <!-- Type Badge (LEC, LAB, SEM) -->
-                      <span class="text-[9px] px-1.5 py-0.5 rounded bg-black/25 backdrop-blur-sm font-bold uppercase tracking-wider">
+                      <!-- Type Badge (LEC, LAB, SEM with distinct color coding) -->
+                      <span
+                        :class="[
+                          'text-[9px] px-1.5 py-0.5 rounded-md backdrop-blur-sm font-extrabold uppercase tracking-wider shadow-sm transition-all',
+                          getTypeBadgeStyle(cell.course.type)
+                        ]"
+                      >
                         {{ getTypeBadgeText(cell.course.type) }}
                       </span>
                     </div>
@@ -681,6 +686,19 @@ function getTypeBadgeText(type?: string): string {
   if (upper.startsWith("LAB")) return "LAB";
   if (upper.startsWith("SEM")) return "SEM";
   return upper.slice(0, 3);
+}
+
+// Distinct color coding for LEC, LAB, and SEM badges
+function getTypeBadgeStyle(type?: string): string {
+  if (!type) return "bg-slate-950/60 text-sky-300 border border-sky-400/50";
+  const upper = type.trim().toUpperCase();
+  if (upper.startsWith("LAB")) {
+    return "bg-slate-950/60 text-emerald-300 border border-emerald-400/50";
+  }
+  if (upper.startsWith("SEM")) {
+    return "bg-slate-950/60 text-purple-300 border border-purple-400/50";
+  }
+  return "bg-slate-950/60 text-sky-300 border border-sky-400/50";
 }
 
 // Editing Modal state
